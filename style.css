@@ -418,3 +418,78 @@ margin-top:20px;
 margin-bottom:10px;
 }
 
+/*INTEGRATION CSS*/
+
+.compare-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+.before{
+background:#2b1f1f;
+border:1px solid #ff6b6b;
+border-radius:15px;
+padding:30px;
+}
+
+.after{
+background:#123f43;
+border:1px solid #5fd6c6;
+border-radius:15px;
+padding:30px;
+}
+
+.challenge-alert{
+display:flex;
+gap:20px;
+padding:30px;
+background:#2b1f1f;
+border-left:5px solid #ff6b6b;
+border-radius:12px;
+}
+
+.system-box{
+background:#172231;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+}
+
+.hub-box{
+background:#5fd6c6;
+color:black;
+padding:15px;
+border-radius:10px;
+font-weight:bold;
+}
+
+.cross{
+font-size:2rem;
+color:#ff6b6b;
+text-align:center;
+}
+
+.arrow{
+text-align:center;
+font-size:2rem;
+}
+
+.reference-card{
+background:#172231;
+border:1px solid #263648;
+padding:25px;
+border-radius:12px;
+margin-bottom:20px;
+}
+
+.reference-card p{
+line-height:1.8;
+}
+
+.footer-content{
+text-align:center;
+padding:30px;
+background:#141f2c;
+border-top:1px solid #263648;
+}
