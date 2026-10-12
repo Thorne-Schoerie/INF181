@@ -6,6 +6,7 @@
 <title>Campus Systems — Higher Education IS Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -299,7 +300,38 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .progress i { transition: none; }
-  }
+  } 
+
+  .integration-diagram{
+text-align:center;
+margin-top:30px;
+}
+
+.system,
+.hub{
+background:#18293a;
+padding:20px;
+border-radius:12px;
+margin:15px auto;
+width:300px;
+border:1px solid var(--border);
+}
+
+
+.hub{
+background:#12403f;
+}
+
+.arrow{
+font-size:28px;
+color:var(--teal);
+}
+
+.branch{
+display:flex;
+justify-content:center;
+gap:25px;
+}
 </style>
 </head>
 <body>
@@ -322,6 +354,29 @@
     </div>
   </div>
 </div>
+
+<section class="problem">
+<h2>The Challenge</h2>
+<div class="problem-grid">
+<div class="problem-card">
+<h3>Student Management System</h3>
+<p>Stores student registrations and records.</p>
+</div>
+<div class="problem-card">
+<h3>Learning Management System</h3>
+<p>Stores assessments and learning activities.</p>
+</div>
+<div class="problem-card">
+<h3>Finance System</h3>
+<p>Stores fees and payments.</p>
+</div>
+</div>
+<p class="problem-text">
+These systems do not communicate effectively,
+resulting in duplicate records, delayed updates,
+and inaccurate reporting.
+</p>
+</section>
 
 <div class="wrap layout">
   <aside class="side">
@@ -366,7 +421,10 @@
       <div class="sec-head">
         <span class="badge">01</span>
         <div>
-          <h2>Data and information management</h2>
+         <h2>
+<i class="fas fa-database"></i>
+Data and Information Management
+</h2>
           <p class="sec-sub"><strong>Core focus:</strong> create reliable, timely and understandable information from institutional data.</p>
         </div>
       </div>
@@ -459,7 +517,10 @@
       <div class="sec-head">
         <span class="badge">02</span>
         <div>
-          <h2>POPIA, privacy and ethics</h2>
+          <h2>
+<i class="fas fa-shield-halved"></i>
+POPIA, Privacy and Ethics
+</h2>
           <p class="sec-sub">Student records are personal information. Handle them lawfully, securely and for a clear institutional purpose.</p>
         </div>
       </div>
@@ -503,7 +564,10 @@
       <div class="sec-head">
         <span class="badge">03</span>
         <div>
-          <h2>AI and decision support</h2>
+          <h2>
+<i class="fas fa-robot"></i>
+AI and Decision Support
+</h2>
           <p class="sec-sub">Use automation to help staff notice patterns—not to remove accountability from decisions affecting students.</p>
         </div>
       </div>
@@ -559,7 +623,10 @@
       <div class="sec-head">
         <span class="badge">04</span>
         <div>
-          <h2>Enterprise systems and integration</h2>
+          <h2>
+            <i class="fas fa-plug"></i>
+            Enterprise systems and integration
+          </h2>
           <p class="sec-sub">Connected systems can reduce duplicate work, but integration needs shared definitions, ownership and reliable technical controls.</p>
         </div>
       </div>
@@ -611,13 +678,56 @@
         <p>Resolve identity and data-definition problems before scaling automated transfers. Integration can propagate errors across every connected system if quality checks are missing.</p>
       </div>
     </section>
-
+    <br><br>
+    <div class="integration-diagram">
+<div class="system">
+Student Management System
+</div>
+<div class="arrow">↓</div>
+<div class="hub">
+Integration Platform
+</div>
+<div class="branch">
+<div class="system">
+Learning Management System
+</div>
+<div class="system">
+Finance System
+</div>
+</div>
+</div>
+<br><br>
+<div class="compare">
+<div class="before">
+<h3>Before Integration</h3>
+<ul>
+<li>Duplicate records</li>
+<li>Manual data entry</li>
+<li>Delayed reporting</li>
+<li>Data inconsistencies</li>
+</ul>
+</div>
+<br>
+<div class="after">
+<h3>After Integration</h3>
+<ul>
+<li>Single source of truth</li>
+<li>Automatic updates</li>
+<li>Real-time reporting</li>
+<li>Improved decision-making</li>
+</ul>
+</div>
+</div>
+<br><br><br>
     <!-- 05 FIT -->
     <section id="fit">
       <div class="sec-head">
         <span class="badge">05</span>
         <div>
-          <h2>Adapting systems to institutional needs</h2>
+          <h2>
+            <i class="fas fa-cogs"></i>
+            Adapting systems to institutional needs
+          </h2>
           <p class="sec-sub">Fit systems to legitimate workflows while avoiding unnecessary complexity and expensive custom code.</p>
         </div>
       </div>
@@ -667,7 +777,10 @@
       <div class="sec-head">
         <span class="badge">✓</span>
         <div>
-          <h2>Quick systems audit checklist</h2>
+          <h2>
+            <i class="fas fa-search"></i>
+            Quick systems audit checklist
+          </h2>
           <p class="sec-sub">Use this as a discussion starter. Tick an item only when evidence exists—not because someone believes it is probably true.</p>
         </div>
       </div>
