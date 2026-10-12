@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Academic operations dashboard | Higher Education IS Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F4F3;
+    --surface: #FFFFFF;
+    --ink: #15232B;
+    --muted: #55656D;
+    --rule: #CBD3D5;
+    --track: #E4E9EA;
+    --sel: #E8EEF6;
+    --pass: #17766A;
+    --gap: #A8530A;
+    --gap-soft: #E3A66F;
+    --target: #2B2A8F;
+    --head: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1A1F;
+      --surface: #16252C;
+      --ink: #E8EEF0;
+      --muted: #9DB0B7;
+      --rule: #2C3E46;
+      --track: #22343C;
+      --sel: #1C3140;
+      --pass: #4FC1AE;
+      --gap: #F0A15A;
+      --gap-soft: #7A4D26;
+      --target: #B3B2FF;
+    }
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.55 var(--body);
+  }
+  .dash { max-width: 68rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+  h1, h2, h3 { font-family: var(--head); line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; }
+  h2 { font-size: 1.6rem; font-weight: 700; }
+  h3 { font-size: 1.15rem; font-weight: 500; }
+  p { margin: 0; max-width: 62ch; }
+  section { margin-top: 3.5rem; }
+  .lede { margin-top: .75rem; font-size: 1.2rem; color: var(--muted); max-width: 58ch; }
+  .section-intro { margin-top: .5rem; color: var(--muted); }
+
+  /* demo notice + dashboard meta */
+  .notice {
+    margin-top: 1.5rem; padding: .7rem 1rem; border: 1.5px solid var(--gap); border-radius: 6px;
+    display: flex; gap: .6rem; align-items: baseline; max-width: 62ch;
+  }
+  .notice b { color: var(--gap); }
+  .meta { margin: 1.25rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem 2rem; font-size: .95rem; }
+  .meta div { display: flex; gap: .4rem; }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; font-weight: 600; }
+
+  /* hero: bullet chart */
+  .panel { margin-top: 1.5rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1.25rem 1.25rem 1rem; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--rule); }
+  .controls label { font-weight: 600; }
+  .controls input[type=range] { flex: 1 1 14rem; max-width: 22rem; accent-color: var(--target); }
+  .controls output { font: 700 1.25rem var(--head); min-width: 3.2rem; color: var(--target); }
+  .controls .hint { flex-basis: 100%; font-size: .95rem; color: var(--muted); }
+  .summary { margin: 1rem 0 .25rem; font-size: 1.15rem; font-weight: 600; max-width: none; }
+
+  .gridrow { display: grid; grid-template-columns: 13rem 1fr 11.5rem; gap: 1rem; align-items: center; }
+  .flagrow, .axisrow { padding: 0 .6rem 0 calc(.6rem + 4px); }
+  .flagrow { height: 1.6rem; }
+  .flagrow .scale, .axisrow .scale { position: relative; height: 100%; }
+  .flag { position: absolute; bottom: 0; transform: translateX(-50%); white-space: nowrap; font-size: .85rem; font-weight: 600; color: var(--target); }
+  .flag::after { content: ""; display: block; margin: 2px auto 0; width: 0; height: 0; border: 5px solid transparent; border-top-color: var(--target); border-bottom: 0; }
+  .axisrow { height: 1.4rem; margin-top: .15rem; font-size: .8rem; color: var(--muted); }
+  .axisrow span.tickl { position: absolute; top: 0; transform: translateX(-50%); }
+  .axisrow .unit { position: absolute; right: 0; top: 1.1rem; font-size: .8rem; }
+
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rows li + li { border-top: 1px solid var(--rule); }
+  .row {
+    appearance: none; -webkit-appearance: none; display: grid; box-sizing: border-box; width: 100%; margin: 0;
+    font: inherit; color: inherit; text-align: left; cursor: pointer; padding: .9rem .6rem;
+    background: none; border: 0; border-left: 4px solid transparent; border-radius: 3px;
+  }
+  .row:hover { background: var(--sel); }
+  .row[aria-pressed="true"] { background: var(--sel); border-left-color: var(--target); }
+  .row:focus-visible { outline: 3px solid var(--target); outline-offset: 2px; }
+  .row-name strong { display: block; font-weight: 600; }
+  .row-name small { color: var(--muted); font-size: .9rem; line-height: 1.3; display: block; }
+  .track {
+    position: relative; height: 26px; border-radius: 3px; background-color: var(--track);
+    background-image: linear-gradient(to right, var(--rule) 1px, transparent 1px); background-size: 25% 100%;
+  }
+  .fill { position: absolute; left: 0; top: 4px; bottom: 4px; border-radius: 2px; transition: width .35s ease; }
+  .fill.meets { background: var(--pass); }
+  .fill.below { background: repeating-linear-gradient(135deg, var(--gap) 0 6px, var(--gap-soft) 6px 11px); }
+  .tick { position: absolute; top: -6px; bottom: -6px; width: 3px; margin-left: -1.5px; background: var(--target); border-radius: 1px; transition: left .2s ease; }
+  .row-val { text-align: right; }
+  .row-val b { font: 700 1.9rem/1 var(--head); font-variant-numeric: tabular-nums; }
+  .status { display: block; margin-top: .2rem; font-size: .9rem; font-weight: 600; }
+  .status.meets { color: var(--pass); }
+  .status.below { color: var(--gap); }
+  .legend { display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--rule); font-size: .9rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: .45rem; }
+  .sw { width: 22px; height: 12px; border-radius: 2px; display: inline-block; }
+  .sw.meets { background: var(--pass); }
+  .sw.below { background: repeating-linear-gradient(135deg, var(--gap) 0 4px, var(--gap-soft) 4px 8px); }
+  .sw.tick { width: 3px; height: 16px; background: var(--target); }
+
+  .detail { margin-top: 1.25rem; padding: 1.1rem 1.25rem; border-left: 4px solid var(--target); background: var(--surface); border-radius: 0 6px 6px 0; }
+  .detail dl { display: grid; grid-template-columns: 11rem 1fr; gap: .45rem 1.25rem; margin: .75rem 0 0; }
+  .detail dt { color: var(--muted); }
+  .detail dd { margin: 0; }
+
+  /* tables */
+  .tablewrap { overflow-x: auto; margin-top: 1rem; }
+  table { border-collapse: collapse; width: 100%; min-width: 40rem; }
+  th, td { text-align: left; vertical-align: top; padding: .7rem .8rem; border-bottom: 1px solid var(--rule); }
+  th { font: 500 .95rem var(--body); color: var(--muted); border-bottom: 2px solid var(--ink); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  tr.used td { background: var(--sel); }
+  tr.used td:first-child { box-shadow: inset 4px 0 0 var(--target); }
+  .usedtag { display: block; font-size: .8rem; font-weight: 600; color: var(--target); }
+
+  /* ownership */
+  .lookup { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+  .lookup label { font-weight: 600; }
+  select { font: inherit; padding: .45rem .6rem; border: 1.5px solid var(--ink); border-radius: 4px; background: var(--surface); color: var(--ink); min-width: 14rem; }
+  select:focus-visible, input:focus-visible { outline: 3px solid var(--target); outline-offset: 2px; }
+  .answer { margin-top: .75rem; font-weight: 600; }
+  .systems { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .system { border-top: 3px solid var(--rule); padding-top: .6rem; }
+  .system.owner { border-top-color: var(--pass); }
+  .system h3 { display: flex; justify-content: space-between; gap: .5rem; align-items: baseline; }
+  .system .badge { font: 600 .8rem var(--body); color: var(--pass); visibility: hidden; }
+  .system.owner .badge { visibility: visible; }
+  .system ul { margin: .5rem 0 0; padding-left: 1.1rem; }
+  .system li { padding: .1rem 0; }
+  .system li.hit { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* cycle */
+  .cycle { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; counter-reset: s; }
+  .cycle li { border-top: 3px solid var(--ink); padding-top: .6rem; counter-increment: s; }
+  .cycle h3::before { content: counter(s) ". "; color: var(--target); }
+  .cycle p { margin-top: .4rem; font-size: .98rem; }
+  .loop { margin-top: 1rem; color: var(--muted); }
+
+  /* chart guide + checklist */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem; }
+  .guide { list-style: none; margin: .75rem 0 0; padding: 0; }
+  .guide li { padding: .55rem 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 9.5rem 1fr; gap: 1rem; }
+  .guide b { font-weight: 600; }
+  .checks { list-style: none; margin: .75rem 0 0; padding: 0; }
+  .checks li { border-bottom: 1px solid var(--rule); }
+  .checks label { display: flex; gap: .7rem; padding: .6rem 0; cursor: pointer; }
+  .checks input { width: 1.2rem; height: 1.2rem; margin-top: .25rem; accent-color: var(--pass); flex: none; }
+  .checks input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .progress { margin-top: .6rem; font-weight: 600; }
+
+  footer { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: .9rem; }
+  footer p { max-width: 72ch; }
+  footer p + p { margin-top: .4rem; }
+
+  @media (max-width: 820px) {
+    .systems, .cycle, .two { grid-template-columns: 1fr; }
+    .detail dl { grid-template-columns: 1fr; gap: .1rem; }
+    .detail dd { margin-bottom: .6rem; }
+    .guide li { grid-template-columns: 1fr; gap: 0; }
+  }
+  @media (max-width: 640px) {
+    .gridrow { grid-template-columns: 1fr auto; row-gap: .5rem; }
+    .gridrow .track { grid-column: 1 / -1; grid-row: 2; }
+    .flagrow, .axisrow { grid-template-columns: 1fr; }
+    .flagrow > :not(.scale), .axisrow > :not(.scale) { display: none; }
+    .row-val { grid-row: 1; grid-column: 2; }
+    .row-name { grid-row: 1; grid-column: 1; }
+    .axisrow { margin-bottom: 1.4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .fill, .tick { transition: none; } }
+</style>
+</head>
+<body>
+<main class="dash">
+
+  <header>
+    <h1>Academic operations dashboard</h1>
+    <p class="lede">Is our student data complete, current and correct enough for staff to plan from? Three measures, one target you can change.</p>
+    <p class="notice" role="note"><b>Illustrative demo data.</b> <span>These figures are fictional and are not real student records or a real institution.</span></p>
+    <dl class="meta">
+      <div><dt>Reporting period:</dt><dd>None (demo figures)</dd></div>
+      <div><dt>Last refreshed:</dt><dd>Never (static demo)</dd></div>
+      <div><dt>Units:</dt><dd>% of records</dd></div>
+    </dl>
+  </header>
+
+  <section aria-labelledby="h-measures">
+    <h2 id="h-measures">Measures against target</h2>
+    <p class="section-intro">Select a measure to see which quality test sits behind it and what to ask before acting.</p>
+
+    <div class="panel">
+      <div class="controls">
+        <label for="target">Target</label>
+        <input id="target" type="range" min="50" max="100" step="1" value="95" aria-describedby="target-hint">
+        <output id="target-out" for="target">95%</output>
+        <p class="hint" id="target-hint">An example target might be 95% or higher. Real targets must be agreed with institutional owners and read in context.</p>
+      </div>
+
+      <p class="summary" id="summary" aria-live="polite"></p>
+
+      <div class="gridrow flagrow" aria-hidden="true"><span></span><div class="scale" id="flagscale"></div><span></span></div>
+      <ul class="rows" id="rows"></ul>
+      <div class="gridrow axisrow" aria-hidden="true">
+        <span></span>
+        <div class="scale" id="axis"></div>
+        <span></span>
+      </div>
+
+      <div class="legend" aria-hidden="true">
+        <span><i class="sw meets"></i>Solid bar: meets target</span>
+        <span><i class="sw below"></i>Striped bar: below target</span>
+        <span><i class="sw tick"></i>Target marker</span>
+        <span>Bars start at zero (0 to 100%)</span>
+      </div>
+    </div>
+
+    <div class="detail" id="detail" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="h-quality">
+    <h2 id="h-quality">Six practical tests of information quality</h2>
+    <p class="section-intro">The row for the selected measure is highlighted.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th scope="col">Dimension</th><th scope="col">What it means</th><th scope="col">Higher-education test</th></tr></thead>
+        <tbody id="quality"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-owners">
+    <h2 id="h-owners">One authoritative source per data item</h2>
+    <p class="section-intro">Other systems can hold a synchronised copy, but staff must know where a correction is made. Pick a data item to see where that is.</p>
+    <div class="lookup">
+      <label for="item">Data item</label>
+      <select id="item"></select>
+    </div>
+    <p class="answer" id="answer" aria-live="polite"></p>
+    <div class="systems" id="systems"></div>
+  </section>
+
+  <section aria-labelledby="h-cycle">
+    <h2 id="h-cycle">A repeatable improvement cycle</h2>
+    <ol class="cycle">
+      <li><h3>Define the field and rule</h3><p>Agree what "active student" means, who owns the definition and which system is authoritative.</p></li>
+      <li><h3>Profile and measure</h3><p>Count missing IDs, duplicate profiles, invalid codes and out-of-date synchronisations to set a baseline.</p></li>
+      <li><h3>Correct at the source</h3><p>Assign issues to authorised data owners. Validate changes and keep an audit trail rather than overwriting records in a report.</p></li>
+      <li><h3>Prevent and monitor</h3><p>Add validation, staff training and routine exception reports. Track the same measures monthly.</p></li>
+    </ol>
+    <p class="loop">Then return to step 2 and check whether quality improved.</p>
+  </section>
+
+  <section aria-labelledby="h-chart">
+    <h2 id="h-chart">Reading the dashboard well</h2>
+    <div class="two">
+      <div>
+        <h3>Pick the chart for the question</h3>
+        <ul class="guide">
+          <li><b>Change over time</b><span>Line chart</span></li>
+          <li><b>Compare programmes or faculties</b><span>Bar chart, starting at zero, with units labelled</span></li>
+          <li><b>Every chart</b><span>Show the reporting period and last refresh time</span></li>
+          <li><b>Meaning</b><span>Do not rely on colour alone: use labels, patterns or shapes</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ask before acting</h3>
+        <ul class="checks" id="checks"></ul>
+        <p class="progress" id="progress" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Content based on "Higher Education IS Audit | Data and information management". All figures are fictional demo data.</p>
+    <p>Measure-to-test pairings and the editable target are design choices for this dashboard.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var systems = {
+    student: { name: "Student management", owns: ["Student identity", "Enrolment", "Programme", "Registration status"] },
+    lms: { name: "Learning management", owns: ["Course access", "Submissions", "Attendance or activity", "Assessment results"] },
+    finance: { name: "Finance", owns: ["Invoices", "Payments", "Balances", "Refunds", "Funding status"] }
+  };
+
+  var quality = [
+    { id: "Accuracy", means: "Correctly represents reality", test: "Sample student names and balances against verified source records." },
+    { id: "Completeness", means: "Required fields are present", test: "Check that active students have a programme, student number and registration status." },
+    { id: "Consistency", means: "Same meaning across systems", test: "Compare student ID, module code and registration status between platforms." },
+    { id: "Timeliness", means: "Available when needed and current enough", test: "Measure delay between a registration change and its appearance in the LMS." },
+    { id: "Validity", means: "Follows agreed rules and formats", test: "Reject invalid dates, unknown module codes or impossible mark values." },
+    { id: "Uniqueness", means: "No unintended duplicate records", test: "Flag duplicate student profiles before merging; verify identity first." }
+  ];
+
+  var measures = [
+    { id: "reg", name: "Registration complete", value: 94, source: "Student management",
+      dims: ["Completeness"], dimLabel: "Completeness",
+      test: "Check that active students have a programme, student number and registration status.",
+      owner: "Student management owns identity, enrolment, programme and registration status.",
+      ask: "Is the metric defined consistently? Agree what \"active student\" means, and who owns that definition, before comparing figures." },
+    { id: "lms", name: "LMS sync on time", value: 82, source: "Learning management",
+      dims: ["Timeliness"], dimLabel: "Timeliness",
+      test: "Measure the delay between a registration change and its appearance in the LMS.",
+      owner: "Registration status is owned by student management. The LMS holds a synchronised copy, so fix problems at the source.",
+      ask: "Could a change reflect a late data feed? Check the feed timing before concluding records are wrong." },
+    { id: "qc", name: "Quality checks passed", value: 89, source: "Data owners",
+      dims: ["Accuracy", "Completeness", "Consistency", "Timeliness", "Validity", "Uniqueness"], dimLabel: "All six tests",
+      test: "Accuracy, completeness, consistency, timeliness, validity and uniqueness.",
+      owner: "Each field's data owner in the system that is authoritative for it.",
+      ask: "Is the sample large enough to be meaningful, and who owns the data and can verify it?" }
+  ];
+
+  var checks = [
+    "Is the metric defined consistently?",
+    "Could a change reflect a late data feed?",
+    "Is the sample large enough to be meaningful?",
+    "Who owns the data and can verify it?"
+  ];
+
+  var state = { target: 95, selected: "reg", ticked: {} };
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* axis ticks, built once */
+  var axis = $("axis");
+  [0, 25, 50, 75, 100].forEach(function (n) {
+    var s = document.createElement("span");
+    s.className = "tickl"; s.style.left = n + "%"; s.textContent = n;
+    axis.appendChild(s);
+  });
+  var unit = document.createElement("span");
+  unit.className = "unit"; unit.textContent = "% of records";
+  axis.appendChild(unit);
+
+  function status(m) {
+    var diff = m.value - state.target;
+    if (diff >= 0) {
+      return { meets: true, text: "\u2713 Meets target" + (diff > 0 ? " (+" + diff + " pts)" : "") };
+    }
+    var gap = -diff;
+    return { meets: false, text: "\u25BC " + gap + " pt" + (gap === 1 ? "" : "s") + " below target" };
+  }
+
+  function renderChart() {
+    var t = state.target;
+    $("target-out").textContent = t + "%";
+
+    var flag = $("flagscale");
+    flag.innerHTML = '<span class="flag" style="left:' + t + '%">Target ' + t + '%</span>';
+
+    var meet = 0, worst = null;
+    measures.forEach(function (m) {
+      var s = status(m);
+      if (s.meets) meet++;
+      else if (!worst || (t - m.value) > (t - worst.value)) worst = m;
+    });
+    var sum = meet + " of " + measures.length + " measures meet the " + t + "% target.";
+    if (worst) sum += " Largest gap: " + worst.name + " (" + (t - worst.value) + " pts).";
+    $("summary").textContent = sum;
+
+    var rows = $("rows");
+    rows.innerHTML = "";
+    measures.forEach(function (m) {
+      var s = status(m);
+      var li = document.createElement("li");
+      li.innerHTML =
+        '<button type="button" class="row gridrow" data-id="' + m.id + '" aria-pressed="' + (state.selected === m.id) + '">' +
+          '<span class="row-name"><strong>' + m.name + '</strong><small>' + m.source + '</small></span>' +
+          '<span class="track" role="img" aria-label="' + m.name + ': ' + m.value + ' percent, target ' + t + ' percent">' +
+            '<span class="fill ' + (s.meets ? "meets" : "below") + '" style="width:' + m.value + '%"></span>' +
+            '<span class="tick" style="left:' + t + '%"></span>' +
+          '</span>' +
+          '<span class="row-val"><b>' + m.value + '%</b><span class="status ' + (s.meets ? "meets" : "below") + '">' + s.text + '</span></span>' +
+        '</button>';
+      rows.appendChild(li);
+    });
+  }
+
+  function renderDetail() {
+    var m = measures.filter(function (x) { return x.id === state.selected; })[0];
+    $("detail").innerHTML =
+      '<h3>' + m.name + '</h3>' +
+      '<dl>' +
+        '<dt>Quality test</dt><dd>' + m.dimLabel + '</dd>' +
+        '<dt>How it is tested</dt><dd>' + m.test + '</dd>' +
+        '<dt>Authoritative source</dt><dd>' + m.owner + '</dd>' +
+        '<dt>Ask first</dt><dd>' + m.ask + '</dd>' +
+      '</dl>';
+    var body = $("quality");
+    body.innerHTML = "";
+    quality.forEach(function (q) {
+      var used = m.dims.indexOf(q.id) !== -1;
+      var tr = document.createElement("tr");
+      if (used) tr.className = "used";
+      tr.innerHTML = '<td>' + q.id + (used ? '<span class="usedtag">Used by selected measure</span>' : '') + '</td><td>' + q.means + '</td><td>' + q.test + '</td>';
+      body.appendChild(tr);
+    });
+  }
+
+  /* ownership lookup */
+  var item = $("item");
+  var itemToSystem = {};
+  Object.keys(systems).forEach(function (k) {
+    var og = document.createElement("optgroup");
+    og.label = systems[k].name;
+    systems[k].owns.forEach(function (o) {
+      itemToSystem[o] = k;
+      var op = document.createElement("option");
+      op.value = o; op.textContent = o;
+      og.appendChild(op);
+    });
+    item.appendChild(og);
+  });
+  item.value = "Registration status";
+
+  function renderOwners() {
+    var chosen = item.value, owner = itemToSystem[chosen];
+    $("answer").textContent = chosen + ": correct it in " + systems[owner].name + ". Other systems hold a synchronised copy, so validate the change there and keep an audit trail.";
+    var box = $("systems");
+    box.innerHTML = "";
+    Object.keys(systems).forEach(function (k) {
+      var d = document.createElement("div");
+      d.className = "system" + (k === owner ? " owner" : "");
+      var lis = systems[k].owns.map(function (o) {
+        return '<li' + (o === chosen ? ' class="hit"' : '') + '>' + o + '</li>';
+      }).join("");
+      d.innerHTML = '<h3>' + systems[k].name + '<span class="badge">\u2713 Correct here</span></h3><ul>' + lis + '</ul>';
+      box.appendChild(d);
+    });
+  }
+
+  /* checklist */
+  function renderChecks() {
+    var ul = $("checks");
+    ul.innerHTML = "";
+    checks.forEach(function (c, i) {
+      var li = document.createElement("li");
+      li.innerHTML = '<label><input type="checkbox" data-i="' + i + '"' + (state.ticked[i] ? " checked" : "") + '><span>' + c + '</span></label>';
+      ul.appendChild(li);
+    });
+    updateProgress();
+  }
+  function updateProgress() {
+    var n = Object.keys(state.ticked).filter(function (k) { return state.ticked[k]; }).length;
+    $("progress").textContent = n + " of " + checks.length + " questions answered";
+  }
+
+  /* events */
+  $("target").addEventListener("input", function (e) {
+    state.target = parseInt(e.target.value, 10);
+    renderChart();
+    var btn = document.querySelector('.row[aria-pressed="true"]');
+  });
+  $("rows").addEventListener("click", function (e) {
+    var b = e.target.closest(".row");
+    if (!b) return;
+    state.selected = b.getAttribute("data-id");
+    renderChart(); renderDetail();
+    var again = document.querySelector('.row[data-id="' + state.selected + '"]');
+    if (again) again.focus();
+  });
+  item.addEventListener("change", renderOwners);
+  $("checks").addEventListener("change", function (e) {
+    state.ticked[e.target.getAttribute("data-i")] = e.target.checked;
+    updateProgress();
+  });
+
+  renderChart(); renderDetail(); renderOwners(); renderChecks();
+})();
+</script>
+</body>
+</html>
