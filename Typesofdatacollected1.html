@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Types of Data Collected</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" aria-label="Home"><strong>Data Integration</strong></a>
+    <ul>
+      <li><a href="document.html">Document</a></li>
+      <li><a href="pictures.html">Pictures</a></li>
+      <li><a class="active" href="#types">Types of Data</a></li>
+      <li><a href="#problems">Problems</a></li>
+      <li><a href="#solutions">Solutions</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-hero">
+    <h1><i>Types of Data Collected</i></h1>
+    <p>The school collects student, academic, financial and learning data. Bringing this information together makes it easier to find problems, understand what is happening across the institution and identify practical solutions.</p>
+  </header>
+
+  <main>
+    <section id="types">
+      <h2>Types of Data</h2>
+      <div class="card-grid">
+        <article class="info-card">
+          <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
+          <h3>Student Data</h3>
+          <ul>
+            <li>Student number</li>
+            <li>Name</li>
+            <li>Contact details</li>
+            <li>Email address</li>
+          </ul>
+        </article>
+        <article class="info-card">
+          <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+          <h3>Academic Data</h3>
+          <ul>
+            <li>Marks</li>
+            <li>Attendance</li>
+            <li>Course registration</li>
+          </ul>
+        </article>
+        <article class="info-card">
+          <i class="fa-solid fa-wallet" aria-hidden="true"></i>
+          <h3>Financial Data</h3>
+          <ul>
+            <li>Fees</li>
+            <li>Payments</li>
+            <li>Bursaries</li>
+          </ul>
+        </article>
+        <article class="info-card">
+          <i class="fa-solid fa-laptop" aria-hidden="true"></i>
+          <h3>Learning Data</h3>
+          <ul>
+            <li>LMS logins</li>
+            <li>Assignment submissions</li>
+            <li>Test results</li>
+            <li>Quiz performance</li>
+          </ul>
+        </article>
+      </div>
+      <p>According to reference [1], universities mostly manage these types of records across the SIS and LMS platforms.</p>
+    </section>
+
+    <section id="problems">
+      <h2>Problems</h2>
+      <p>This is where our website connects with the problems schools are currently facing. Faults can arise with each of the following issues, and these are the problems we want to fix.</p>
+
+      <div class="quality-grid">
+        <article class="quality-card">
+          <h3>Problem 1: Duplicate Records</h3>
+          <p><strong>Example:</strong> Multiple systems store the same student's information separately. A student's name may appear more than once in the SMS, LMS and Finance system, with different details.</p>
+          <p><strong>Impact:</strong></p>
+          <ul>
+            <li>Incorrect reports</li>
+            <li>Confusion</li>
+            <li>Space consumption</li>
+          </ul>
+        </article>
+        <article class="quality-card">
+          <h3>Problem 2: Inconsistent Information</h3>
+          <p><strong>Example:</strong> The Finance Department says a student's fees are paid, while the student's system says the fees are unpaid.</p>
+          <p><strong>Impact:</strong></p>
+          <ul>
+            <li>Incorrect decisions</li>
+            <li>Registration delays</li>
+            <li>Loss of income within the school</li>
+          </ul>
+        </article>
+        <article class="quality-card">
+          <h3>Problem 3: Delayed Updates</h3>
+          <p><strong>Example:</strong> A student changes their cell phone number. The update appears in one system but not in the other systems.</p>
+          <p><strong>Result:</strong></p>
+          <ul>
+            <li>Staff work with outdated information</li>
+            <li>The student won't receive information</li>
+            <li>Lack of communication between both parties</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="ethics-box">
+        <p>According to reference [2], disconnected systems commonly create inconsistencies and data silos. Data silos happen when information is kept separately and can't be shared effectively between systems, which reduces visibility and weakens decision-making [3].</p>
+        <p>Data matters because good quality data allows managers, lecturers and administrators to make accurate decisions. Trustworthy information helps the institution monitor student performance, manage finances and improve student success rates. Data management platforms collect, validate, integrate and analyse institutional data to help with decision-making [4].</p>
+      </div>
+    </section>
+
+    <section id="solutions">
+      <h2>Solutions</h2>
+      <div class="card-grid">
+        <article class="info-card">
+          <i class="fa-solid fa-link" aria-hidden="true"></i>
+          <h3>Solution 1: Integrate Systems</h3>
+          <p><strong>Things that must be connected:</strong></p>
+          <ul>
+            <li>SMS</li>
+            <li>LMS</li>
+            <li>Finance</li>
+          </ul>
+          <p><strong>Benefits:</strong></p>
+          <ul>
+            <li>Information updates automatically</li>
+            <li>Fewer duplicates</li>
+            <li>More space for other things to be stored</li>
+          </ul>
+          <p>Integrated systems improve efficiency and reduce inconsistencies in records [5].</p>
+        </article>
+        <article class="info-card">
+          <i class="fa-solid fa-check-double" aria-hidden="true"></i>
+          <h3>Solution 2: Data Validation</h3>
+          <p>Rules that must be followed:</p>
+          <ul>
+            <li>A phone number must contain the correct number of digits</li>
+            <li>Marks must be between 0 and 100</li>
+          </ul>
+        </article>
+        <article class="info-card">
+          <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
+          <h3>Solution 3: Data Audits</h3>
+          <p><strong>Regularly check:</strong></p>
+          <ul>
+            <li>Whether there is missing information</li>
+            <li>Whether there are duplicates within the program</li>
+            <li>Whether there are incorrect records</li>
+          </ul>
+          <p><strong>Benefit:</strong> Better data quality.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-content">
+    <p>2026 Types of Data Collected</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" defer></script>
+</body>
+</html>
